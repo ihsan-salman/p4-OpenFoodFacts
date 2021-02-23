@@ -15,19 +15,21 @@ class Data:
             print(record)
         self.choose_category()
 
-    def choose_category(self):
-        #
+    def choose_category(self, ):
         self.choice_category = input(
             "-------------------------------------------------------"
             "\nEntrez le chiffre correspondant à votre choix "
             "puis pressez sur ENTER :\n")
+        print("\n----------------------------------------")
         self.request = '''
         SELECT id, product_name
         FROM FoodData
         WHERE category_id = %s'''
-        print("\n----------------------------------------")
         if 1 <= int(self.choice_category) <= 5:
             self.cursor.execute(self.request, (int(self.choice_category), ))
+            self.records = self.cursor.fetchall()
+        elif self.choice_category == '0':
+            self.menu.display_menu()
         else:
             print("\n\nVotre choix n'est pas valable!"
                   " Veuillez entrez un nombre valide"
@@ -36,7 +38,6 @@ class Data:
         self.display_product()
 
     def display_product(self):
-        self.records = self.cursor.fetchall()
         for record in self.records:
             print(record)
         print('\n---------------------------------------------------------'
@@ -161,10 +162,17 @@ class Data:
                 self.substitute = record
             print('\n---------------------------------------------------------'
                   '\nVous avez choisi:', self.substitute[1])
+        elif self.choice_substitute == '0':
+            self.display_product()
         else:
             print("\n\nVotre choix n'est pas valable!"
                   " Veuillez entrez un nombre valide"
                   "\n------------------------------------------------------")
             self.finding_substitute()
+        self.display_prod_vs_sub()
 
-     # def print_prod_vs_sub(self):
+    def display_prod_vs_sub(self):
+        print('\n--------------------------------------------------'
+              '\nvoici le récapitutaltif des choix précédents'
+              '\n--------------------------------------------------'
+              )
