@@ -58,6 +58,8 @@ class Data:
                 self.product = record
             print('\n---------------------------------------------------------'
                   '\nVous avez choisi:', self.product[1])
+        elif self.choice_product == '0':
+            self.display_category()
         else:
             print("\n\nVotre choix n'est pas valable!"
                   " Veuillez entrez un nombre valide"
@@ -73,6 +75,7 @@ class Data:
             SELECT id, product_name, nutriscore_grade
             FROM FoodData where category_id = %s
             AND nutriscore_grade IS NOT NULL
+            AND stores IS NOT NULL
             AND id != %s LIMIT 5'''
             self.cursor.execute(self.request_substitute,
                                 (int(self.choice_category),
@@ -87,6 +90,7 @@ class Data:
             FROM FoodData where category_id = %s
             AND nutriscore_grade IN ('b', 'a')
             AND nutriscore_grade IS NOT NULL
+            AND stores IS NOT NULL
             AND id != %s LIMIT 5'''
             self.cursor.execute(self.request_substitute,
                                 (int(self.choice_category),
@@ -101,6 +105,7 @@ class Data:
             FROM FoodData where category_id = %s
             AND nutriscore_grade IN ('c', 'b', 'a')
             AND nutriscore_grade IS NOT NULL
+            AND stores IS NOT NULL
             AND id != %s LIMIT 5'''
             self.cursor.execute(self.request_substitute,
                                 (int(self.choice_category),
@@ -115,6 +120,7 @@ class Data:
             FROM FoodData where category_id = %s
             AND nutriscore_grade IN ('c', 'b', 'a')
             AND nutriscore_grade IS NOT NULL
+            AND stores IS NOT NULL
             AND id != %s LIMIT 5'''
             self.cursor.execute(self.request_substitute,
                                 (int(self.choice_category),
@@ -129,6 +135,7 @@ class Data:
             FROM FoodData where category_id = %s
             AND nutriscore_grade != 'e'
             AND nutriscore_grade IS NOT NULL
+            AND stores IS NOT NULL
             AND id != %s LIMIT 5'''
             self.cursor.execute(self.request_substitute,
                                 (int(self.choice_category),
@@ -160,4 +167,4 @@ class Data:
                   "\n------------------------------------------------------")
             self.finding_substitute()
 
-     def print_prod_vs_sub(self):
+     # def print_prod_vs_sub(self):
