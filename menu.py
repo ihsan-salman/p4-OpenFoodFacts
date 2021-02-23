@@ -15,7 +15,7 @@ class Menu:
               '\nBienvenue dans OpenfoodFacts data'
               '\n---------------------------------')
         print("\n-----------------------------------------------"
-              "\n1 - Quel aliment souhaitez-vous remplacer ? ")
+              "\n1 - Selectionner une catégorie ")
         print("2 - Retrouver mes aliments substitués.")
         print("3 - Réinitialiser la base de données")
         print("4 - Quitter le programme."
