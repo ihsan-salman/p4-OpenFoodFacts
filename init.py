@@ -61,44 +61,52 @@ class Init_db:
         self.category_input()
 
     def category_input(self):
-        for i in range(5):
-            self.cursor.execute('''
-                INSERT IGNORE INTO Category (name)
-                VALUES (%s)''', (self.category_table[i][0], ))
+        self.request = '''SELECT COUNT(*) FROM Category'''
+        self.cursor.execute(self.request)
+        self.record = self.cursor.fetchall()
+        if self.record[0][0] != len(self.category_table):
+            for i in range(5):
+                self.cursor.execute('''
+                    INSERT IGNORE INTO Category (name)
+                    VALUES (%s)''', (self.category_table[i][0], ))
         self.fooddata_input()
 
     def fooddata_input(self):
-        for i in range(5):
-            for product in self.product_categorie[i]['products']:
-                if 'nutriscore_grade' in product and product[
-                   'nutriscore_grade'] != '':
-                    nutriscore_grade = product['nutriscore_grade']
-                else:
-                    nutriscore_grade = None
+        self.request = '''SELECT COUNT(*) FROM FoodData'''
+        self.cursor.execute(self.request)
+        self.record = self.cursor.fetchall()
+        if self.record[0][0] != 120:
+            for i in range(len(self.category_table)):
+                for product in self.product_categorie[i]['products']:
+                    if 'nutriscore_grade' in product and product[
+                       'nutriscore_grade'] != '':
+                        nutriscore_grade = product['nutriscore_grade']
+                    else:
+                        nutriscore_grade = None
 
-                if 'brands' in product and product['brands'] != '':
-                    brands = product['brands']
-                else:
-                    brands = None
+                    if 'brands' in product and product['brands'] != '':
+                        brands = product['brands']
+                    else:
+                        brands = None
 
-                if 'stores' in product and product['stores'] != '':
-                    stores = product['stores']
-                else:
-                    stores = None
+                    if 'stores' in product and product['stores'] != '':
+                        stores = product['stores']
+                    else:
+                        stores = None
 
-                self.product = [product['product_name'],
-                                brands,
-                                nutriscore_grade,
-                                product['url'],
-                                stores,
-                                i + 1]
-                self.cursor.execute("""
-                INSERT IGNORE INTO FoodData (
-                    product_name,
-                    brands,
-                    nutriscore_grade,
-                    url,
-                    stores,
-                    category_id)
-                VALUES (%s, %s, %s, %s, %s, %s)""", self.product)
-        self.connexion.commit()
+                    self.product = [product['product_name'],
+                                    brands,
+                                    nutriscore_grade,
+                                    product['url'],
+                                    stores,
+                                    i + 1]
+                    self.cursor.execute("""
+                    INSERT IGNORE INTO FoodData (
+                        product_name,
+                        brands,
+                        nutriscore_grade,
+                        url,
+                        stores,
+                        category_id)
+                    VALUES (%s, %s, %s, %s, %s, %s)""", self.product)
+            self.connexion.commit()
