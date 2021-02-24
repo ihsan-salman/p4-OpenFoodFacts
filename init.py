@@ -3,8 +3,9 @@ import requests
 
 class Init_db:
 
-    def __init__(self, cursor):
-        self.cursor = cursor
+    def __init__(self, connexion):
+        self.connexion = connexion
+        self.cursor = self.connexion.cursor()
         self.category_table = [
             ('pizzas',
              'https://world.openfoodfacts.org/category/pizzas.json'),

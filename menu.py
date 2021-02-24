@@ -7,13 +7,16 @@ class Menu:
 
     def __init__(self, data):
         self.data = data
+        self.welcome()
         self.display_menu()
 
-    def display_menu(self):
-        # Display the menu with all choice
+    def welcome(self):
         print('---------------------------------'
               '\nBienvenue dans OpenfoodFacts data'
               '\n---------------------------------')
+
+    def display_menu(self):
+        # Display the menu with all choice
         print("\n-----------------------------------------------"
               "\n1 - Selectionner une catégorie ")
         print("2 - Retrouver mes aliments substitués.")
@@ -32,10 +35,15 @@ class Menu:
                   "\nVous voulez trouver un aliment de substitution !"
                   "\n------------------------------------------------")
             self.data.display_category()
+            self.display_menu()
         elif self.choice == "2":
-            print("\nVous voulez voir vos alIments substitués !")
+            print("\nVous voulez voir vos aliments substitués !")
+            self.data.display_saved_prod()
+            self.display_menu()
         elif self.choice == "3":
             print("\nVous voulez réinitialiser votre base de données !")
+            self.data.delete_saved_prod()
+            self.display_menu()
         elif self.choice == "4":
             print("A bientôt ! \nFermeture du programme...")
             exit()

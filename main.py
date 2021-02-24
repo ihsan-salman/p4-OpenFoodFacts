@@ -6,6 +6,6 @@ from connexion import Connexion_mysql
 
 # Instances of classes
 connexion = Connexion_mysql()
-# init = Init_db(connexion.cursor)
-data = Data(connexion.cursor)
-menu = Menu(data)
+# init = Init_db(connexion.connexion)
+data = Data(connexion.connexion)
+menu = Menu(data) 

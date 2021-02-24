@@ -1,7 +1,8 @@
 class Data:
 
-    def __init__(self, cursor):
-        self.cursor = cursor
+    def __init__(self, connexion):
+        self.connexion = connexion
+        self.cursor = self.connexion.cursor()
         self.i = 0
         self.selected_product = []
         self.product_list = []
@@ -15,7 +16,7 @@ class Data:
             print(record)
         self.choose_category()
 
-    def choose_category(self, ):
+    def choose_category(self):
         self.choice_category = input(
             "-------------------------------------------------------"
             "\nEntrez le chiffre correspondant à votre choix "
@@ -28,8 +29,8 @@ class Data:
         if 1 <= int(self.choice_category) <= 5:
             self.cursor.execute(self.request, (int(self.choice_category), ))
             self.records = self.cursor.fetchall()
-        elif self.choice_category == '0':
-            self.menu.display_menu()
+        # elif self.choice_category == '0':
+            # self.menu.display_menu()
         else:
             print("\n\nVotre choix n'est pas valable!"
                   " Veuillez entrez un nombre valide"
@@ -65,18 +66,17 @@ class Data:
             print("\n\nVotre choix n'est pas valable!"
                   " Veuillez entrez un nombre valide"
                   "\n------------------------------------------------------")
-            self.choose_product()
+            self.display_product()
         self.finding_substitute()
 
     def finding_substitute(self):
         self.sub_number = []
-        print('\n------------------------------------')
+        print('\n-----------------------------------------------------------')
         if self.product[3] == 'a':
             self.request_substitute = '''
             SELECT id, product_name, nutriscore_grade
             FROM FoodData where category_id = %s
             AND nutriscore_grade IS NOT NULL
-            AND stores IS NOT NULL
             AND id != %s LIMIT 5'''
             self.cursor.execute(self.request_substitute,
                                 (int(self.choice_category),
@@ -85,13 +85,12 @@ class Data:
             for record in self.records_product:
                 self.sub_number.append(record[0])
                 print(record)
-        if self.product[3] == 'b':
+        elif self.product[3] == 'b':
             self.request_substitute = '''
             SELECT id, product_name, nutriscore_grade
             FROM FoodData where category_id = %s
             AND nutriscore_grade IN ('b', 'a')
             AND nutriscore_grade IS NOT NULL
-            AND stores IS NOT NULL
             AND id != %s LIMIT 5'''
             self.cursor.execute(self.request_substitute,
                                 (int(self.choice_category),
@@ -100,13 +99,12 @@ class Data:
             for record in self.records_product:
                 self.sub_number.append(record[0])
                 print(record)
-        if self.product[3] == 'c':
+        elif self.product[3] == 'c':
             self.request_substitute = '''
             SELECT id, product_name, nutriscore_grade
             FROM FoodData where category_id = %s
             AND nutriscore_grade IN ('c', 'b', 'a')
             AND nutriscore_grade IS NOT NULL
-            AND stores IS NOT NULL
             AND id != %s LIMIT 5'''
             self.cursor.execute(self.request_substitute,
                                 (int(self.choice_category),
@@ -115,13 +113,12 @@ class Data:
             for record in self.records_product:
                 self.sub_number.append(record[0])
                 print(record)
-        if self.product[3] == 'd':
+        elif self.product[3] == 'd':
             self.request_substitute = '''
             SELECT id, product_name, nutriscore_grade
             FROM FoodData where category_id = %s
             AND nutriscore_grade IN ('c', 'b', 'a')
             AND nutriscore_grade IS NOT NULL
-            AND stores IS NOT NULL
             AND id != %s LIMIT 5'''
             self.cursor.execute(self.request_substitute,
                                 (int(self.choice_category),
@@ -130,13 +127,12 @@ class Data:
             for record in self.records_product:
                 self.sub_number.append(record[0])
                 print(record)
-        if self.product[3] == 'e':
+        elif self.product[3] == 'e':
             self.request_substitute = '''
             SELECT id, product_name, nutriscore_grade
             FROM FoodData where category_id = %s
             AND nutriscore_grade != 'e'
             AND nutriscore_grade IS NOT NULL
-            AND stores IS NOT NULL
             AND id != %s LIMIT 5'''
             self.cursor.execute(self.request_substitute,
                                 (int(self.choice_category),
@@ -145,6 +141,8 @@ class Data:
             for record in self.records_product:
                 self.sub_number.append(record[0])
                 print(record)
+        elif self.sub_number == []:
+            print('il y a aucun substitut à votre produit')
         self.choose_substitute()
 
     def choose_substitute(self):
@@ -175,4 +173,64 @@ class Data:
         print('\n--------------------------------------------------'
               '\nvoici le récapitutaltif des choix précédents'
               '\n--------------------------------------------------'
-              )
+              '\n\nproduit choisis:', self.product[1],
+              '\nsubstitut choisis:', self.substitute[1],
+              '\ncomparatif des scores nutritionnels:', 
+              self.product[3] , 'VS', self.substitute[3])
+        self.choice = input(
+            '\n-----------------------------------------------------------'
+            '\n0 pour revenir arrière '
+            'et 1 pour enregister ces produits dans votre base de données\n')
+        if self.choice == '0':
+            self.finding_substitute()
+        elif self.choice == '1':
+            self.save_prod_sub()
+        else:
+            print('Votre choix est incorrecte!'
+                  'Veuillez entrez un choix valide')
+            self.display_prod_vs_sub()
+
+    def save_prod_sub(self):
+        self.request = '''
+        INSERT IGNORE INTO favorite_product (
+            selected_product_id,
+            substitute_product_id)
+        VALUES (%s, %s)'''
+        self.cursor.execute(self.request, 
+                            (self.product[0], 
+                             self.substitute[0], ))
+        self.connexion.commit()
+        print('\nVos produits ont éte enregistré!'
+              'Vous pouvez voir tous vos produits '
+               'enregistrés')
+
+    def display_saved_prod(self):
+        self.request = '''
+        SELECT * FROM favorite_product'''
+        self.cursor.execute(self.request)
+        self.records = self.cursor.fetchall()
+        if self.records !=[]:
+            for i in range(len(self.records)):
+                print('-------------------------------------------------------')
+                for k in range (2):
+                    self.request = '''
+                    SELECT product_name,
+                    nutriscore_grade,
+                    url
+                    FROM FoodData
+                    WHERE id = %s'''
+                    self.cursor.execute(self.request, (self.records[i][k], ))
+                    self.records_fav = self.cursor.fetchall()
+                    for record in self.records_fav:
+                        print(record)
+                print('-------------------------------------------------------\n')
+            print('Voici vos aliments substitués!')
+        else:
+            print('\nvous avez enregistrés aucune données')
+
+    def delete_saved_prod(self):
+        self.request = '''
+        DELETE FROM favorite_product'''
+        self.cursor.execute(self.request)
+        self.connexion.commit()
+        print('Tous vos produits enregistrés ont été supprimés')
