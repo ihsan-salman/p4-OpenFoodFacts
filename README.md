@@ -1,6 +1,6 @@
 # OpenFoodFacts 
 
-You can find a substitute to your product by searching them in this program.
+You can find a substitute to your product by searching them in this program.  
 All the data needful to your search are here !
 
 #  Installation and requierement 
@@ -33,6 +33,10 @@ CREATE DATABASE <name_of_your database>;
 ```
 
 
-You can surf in the menu by entering numbers corresponding to the each choice given in the screen. Be sure to use just numbers to surf in program!
-You have four choice in the main menu:
--first for 
+You can surf in the menu by entering numbers corresponding to the each choice given in the screen.  
+Be sure to use just numbers to surf in program!
+You have four choice in the main menu:  
+-first for selecting a product, find a substitute and save them in your database  
+-second for display all your saved products  
+-third for deleting your saved products  
+-four for quit the program
