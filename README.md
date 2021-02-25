@@ -26,12 +26,13 @@ To start the program, enter the following command in the terminal:
 ```bash
 python3 main.py
 ```
-After th execution of the program, you have to enter your Mysql username, password and your database name.
+After th execution of the program, you have to enter your Mysql username, password and your database name.  
 if you doesn't have any database in Mysql, create one with the following command in your Mysql terminal:
 ```bash
-CREATE DATABSE <name_of_your database>;
+CREATE DATABASE <name_of_your database>;
 ```
 
 
 You can surf in the menu by entering numbers corresponding to the each choice given in the screen. Be sure to use just numbers to surf in program!
-You have four choice in the main menu
+You have four choice in the main menu:
+-first for 
