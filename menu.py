@@ -9,7 +9,7 @@ class Menu:
         self.display_menu()
 
     def welcome(self):
-        # Display  at the biginning a welcoming message 
+        # Display  at the biginning a welcoming message
         print('---------------------------------'
               '\nBienvenue dans OpenfoodFacts data'
               '\n---------------------------------')
@@ -29,7 +29,7 @@ class Menu:
         # Ask a number
         self.choice = input(
             "\nEntrez le chiffre correspondant à votre choix "
-            "puis pressez sur ENTER :\n")
+            "\npuis pressez sur ENTER :\n")
         # Check if the choice is correct and display a message
         if self.choice == "1":
             print("------------------------------------------------"
@@ -40,12 +40,16 @@ class Menu:
             # When the step before is over, display the menu again
             self.display_menu()
         elif self.choice == "2":
-            print("\nVous voulez voir vos aliments substitués !")
+            print('\n-------------------------------------------'
+                  '\nVous voulez voir vos aliments substitués !'
+                  '\n-------------------------------------------')
             # Send to the saved product
             self.data.display_saved_prod()
             self.display_menu()
         elif self.choice == "3":
-            print("\nVous voulez réinitialiser votre base de données !")
+            print("\n------------------------------------------------"
+                  "\nVous voulez réinitialiser votre base de données !"
+                  "\n------------------------------------------------")
             self.data.delete_saved_prod()
             # Display a message after deleting the saved products
             self.display_menu()

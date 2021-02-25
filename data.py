@@ -66,7 +66,8 @@ class Data:
         self.choice_product = input(
             "-------------------------------------------------------"
             "\nEntrez le chiffre correspondant à votre produit "
-            "puis pressez sur ENTER :\n")
+            ' ou 0 pour revenir au choix de la catégorie'
+            "\nPuis pressez sur ENTER :\n")
         # Sql request who get all data of the selected product
         self.request_product = '''SELECT * FROM FoodData WHERE id = %s'''
         # Check if the number is in the right category of product
@@ -119,7 +120,7 @@ class Data:
             self.records_product = self.cursor.fetchall()
             # Run the list
             for record in self.records_product:
-                # Add all the substitutes number 
+                # Add all the substitutes number
                 self.sub_number.append(record[0])
                 # Display the data of each find substitute
                 print(record)
@@ -200,7 +201,8 @@ class Data:
         self.choice_substitute = input(
             "-------------------------------------------------------"
             "\nEntrez le chiffre correspondant à votre substitut "
-            "puis pressez sur ENTER :\n")
+            'ou 0 pour revenir au choix de la catégorie'
+            "\nPuis pressez sur ENTER :\n")
         # Sql request who get the data of the selected substitute product
         self.request_product = 'SELECT * FROM FoodData WHERE id = %s'
         # Check if the number is in the substitute number list
@@ -244,8 +246,8 @@ class Data:
         # Ask a number
         self.choice = input(
             '\n-----------------------------------------------------------'
-            '\n0 pour revenir arrière '
-            'et 1 pour enregister ces produits dans votre base de données\n')
+            '\nEntrez 0 pour revenir arrière '
+            '\nOu 1 pour enregister ces produits dans votre base de données\n')
         # Send back if the choice is 0
         if self.choice == '0':
             self.finding_substitute()
@@ -261,7 +263,7 @@ class Data:
 
     def save_prod_sub(self):
         # Save the product in the favorite product's table
-        # Sql request who insert the id of the product 
+        # Sql request who insert the id of the product
         # and the substitute in the table
         self.request = '''
         INSERT IGNORE INTO favorite_product (
@@ -275,9 +277,8 @@ class Data:
         # Save the change of the database
         self.connexion.commit()
         # Display a message that the products are correctly saved
-        print('\nVos produits ont éte enregistré!'
-              'Vous pouvez voir tous vos produits '
-              'enregistrés')
+        print('\n--------------------------------------------------------'
+              '\nVos produits ont éte enregistré!')
 
     def display_saved_prod(self):
         # Display all the saved product
@@ -317,7 +318,7 @@ class Data:
                                   '\nscore nutritionnel:', value[1],
                                   '\nlien:', value[2],
                                   '\nMagasin:', value[3])
-                        else :
+                        else:
                             print('\nnom du substitut:', value[0],
                                   '\nscore nutritionnel:', value[1],
                                   '\nlien:', value[2],
@@ -338,4 +339,4 @@ class Data:
         # Save the change of the database
         self.connexion.commit()
         # Return a message that the products are deleted
-        print('Tous vos produits enregistrés ont été supprimés')
+        print('\nTous vos produits enregistrés ont été supprimés')

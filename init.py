@@ -1,4 +1,4 @@
-# Importation of the moduls 
+# Importation of the moduls
 import requests
 
 ''''''
@@ -69,7 +69,7 @@ class Init_db:
         self.requests()
 
     def requests(self):
-        # Make requests to the OpenfoodFacts API 
+        # Make requests to the OpenfoodFacts API
         # to get the data of each category
         # Run the category list
         for i in range(len(self.category_table)):
@@ -131,14 +131,14 @@ class Init_db:
                         stores = product['stores']
                     else:
                         stores = None
-                    # Add all the data in the product list    
+                    # Add all the data in the product list
                     self.product = [product['product_name'],
                                     brands,
                                     nutriscore_grade,
                                     product['url'],
                                     stores,
                                     i + 1]
-                    # Insert all the data of each product 
+                    # Insert all the data of each product
                     # in the fooddata table
                     self.cursor.execute("""
                     INSERT IGNORE INTO FoodData (
