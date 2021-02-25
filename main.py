@@ -1,3 +1,6 @@
+﻿#!/usr/bin/python3
+# -*- coding: Utf-8 -*
+
 # Importation of moduls
 from menu import Menu
 from data import Data
