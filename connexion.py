@@ -1,5 +1,6 @@
 # Importation of the moduls
 import mysql.connector
+
 '''Class responsible for connections'''
 
 
@@ -12,12 +13,8 @@ class Connexion_mysql:
 
     def connexion(self):
         # Make connexion to the sql server
-        self.environ["MYSQL_USERNAME"]="ihsan"
-        self.environ["MYSQL_PASSWORD"]="ihsan"
-        self.environ["MYSQL_DATABASE"]="OPF"
         self.connexion = mysql.connector.connect(
             host="localhost",
             user=self.environ["MYSQL_USERNAME"],
             password=self.environ["MYSQL_PASSWORD"],
             database=self.environ["MYSQL_DATABASE"])
-        #Variable d'environnment à la place de mes propres données

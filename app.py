@@ -22,13 +22,20 @@ class App:
 
     def choose_category(self):
         # Ask a number to the display after all products of the category
+        self.category_id_list = []
         self.choice_category = input(
             "-------------------------------------------------------"
             "\nEntrez le chiffre correspondant à votre choix "
             "puis pressez sur ENTER :\n")
         print("\n----------------------------------------")
+        # Sql request who get the category id
+        self.cursor.execute('''SELECT id FROM Category''')
+        # Recover query result to be used as a python variable
+        self.records = self.cursor.fetchall()
+        for i in range(len(self.records)):
+            self.category_id_list.append(self.records[i][0])
         # Check if the  category choice is correct
-        if 1 <= int(self.choice_category) <= 5:
+        if int(self.choice_category) in self.category_id_list:
             # Sql request who get the needful data to choose after a product
             self.request = '''
             SELECT id, product_name

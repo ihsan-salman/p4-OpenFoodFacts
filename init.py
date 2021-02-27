@@ -1,6 +1,7 @@
 # Importation of the moduls
 import requests
 from connexion import Connexion_mysql
+import os
 
 ''''''
 
@@ -84,6 +85,11 @@ class Init_db:
 
     def insert_category(self):
         # Input the categories name if the table is empty
+        # Sql request who set all foreign keys at OFF mode
+        self.cursor.execute('''SET FOREIGN_KEY_CHECKS = 0''')
+        # Sql request who delete all data
+        # in a table with the id auto-incremented
+        self.cursor.execute('''TRUNCATE TABLE Category''')
         # Sql request who give the line number of the table
         self.request = '''SELECT COUNT(*) FROM Category'''
         # Execute the sql request
@@ -97,14 +103,20 @@ class Init_db:
                 self.cursor.execute('''
                     INSERT IGNORE INTO Category (name)
                     VALUES (%s)''', (self.category_table[i][0], ))
+            # Save all the change in the mysql database
+            self.connexion.commit()
 
     def insert_product(self):
         # Input the fooddata if the table is empty
+        self.cursor.execute('''TRUNCATE TABLE Product''')
+        # Sql request who set all foreign keys at ON mode
+        self.cursor.execute('''SET FOREIGN_KEY_CHECKS = 1''')
+        # Sql request who get the Category id
+        self.cursor.execute('''SELECT id FROM Category''')
+        self.record = self.cursor.fetchall()
+        self.category_id = self.record
         # Sql request who give the line number of the table
-        self.request = '''SELECT COUNT(*) FROM Product'''
-        # Execute the sql request
-        self.cursor.execute(self.request)
-        # Recover query result to be used as a python variable
+        self.cursor.execute('''SELECT COUNT(*) FROM Product''')
         self.record_product = self.cursor.fetchall()
         # Check if the table's line number is different that 0
         if self.record_product[0][0] != 120:
@@ -135,7 +147,7 @@ class Init_db:
                                     nutriscore_grade,
                                     product['url'],
                                     stores,
-                                    i + 1]
+                                    self.category_id[i][0]]
                     # Insert all the data of each product
                     # in the Product table
                     self.cursor.execute("""
@@ -150,6 +162,7 @@ class Init_db:
         # Save all the change in the mysql database
         self.connexion.commit()
 
-if __name__ == "main":
-    connexion = Connexion_mysql()
+
+if __name__ == "__main__":
+    connexion = Connexion_mysql(os.environ)
     init = Init_db(connexion.connexion)
