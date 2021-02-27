@@ -1,5 +1,6 @@
 # Importation of the moduls
 import requests
+from connexion import Connexion_mysql
 
 ''''''
 
@@ -30,6 +31,9 @@ class Init_db:
         self.product_categorie = []
         # Instantiate the table creation method
         self.table_creation()
+        self.get_category()
+        self.insert_category()
+        self.insert_product()
 
     def table_creation(self):
         # Create the 3  needful table to the program
@@ -42,7 +46,7 @@ class Init_db:
         ;""")
         # Creation of the products data table
         self.cursor.execute("""
-        CREATE TABLE IF NOT EXISTS FoodData (
+        CREATE TABLE IF NOT EXISTS Product (
             id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
             product_name varchar(200) NOT NULL,
             brands varchar(200),
@@ -60,15 +64,13 @@ class Init_db:
             selected_product_id INT NOT NULL,
             substitute_product_id INT NOT NULL,
             CONSTRAINT fk_sel_prod_id FOREIGN KEY (selected_product_id)
-            REFERENCES FoodData(id),
+            REFERENCES Product(id),
             CONSTRAINT fk_sub_prod_id FOREIGN KEY (substitute_product_id)
-            REFERENCES FoodData(id)
+            REFERENCES Product(id)
         )
         ;""")
-        # Instantiate the requests method
-        self.requests()
 
-    def requests(self):
+    def get_category(self):
         # Make requests to the OpenfoodFacts API
         # to get the data of each category
         # Run the category list
@@ -79,10 +81,8 @@ class Init_db:
             self.json_category = self.json_request.json()
             # Add all json data in a list to make easier the usage
             self.product_categorie.append(self.json_category)
-        # Instantiate the category input method
-        self.category_input()
 
-    def category_input(self):
+    def insert_category(self):
         # Input the categories name if the table is empty
         # Sql request who give the line number of the table
         self.request = '''SELECT COUNT(*) FROM Category'''
@@ -97,19 +97,17 @@ class Init_db:
                 self.cursor.execute('''
                     INSERT IGNORE INTO Category (name)
                     VALUES (%s)''', (self.category_table[i][0], ))
-        # Instantiate the fooddata input method
-        self.fooddata_input()
 
-    def fooddata_input(self):
+    def insert_product(self):
         # Input the fooddata if the table is empty
         # Sql request who give the line number of the table
-        self.request = '''SELECT COUNT(*) FROM FoodData'''
+        self.request = '''SELECT COUNT(*) FROM Product'''
         # Execute the sql request
         self.cursor.execute(self.request)
         # Recover query result to be used as a python variable
-        self.record = self.cursor.fetchall()
-        # Check if the table's line number is different that 120
-        if self.record[0][0] != 120:
+        self.record_product = self.cursor.fetchall()
+        # Check if the table's line number is different that 0
+        if self.record_product[0][0] != 120:
             # Run the category list
             for i in range(len(self.category_table)):
                 # Run the json data of each product
@@ -139,15 +137,19 @@ class Init_db:
                                     stores,
                                     i + 1]
                     # Insert all the data of each product
-                    # in the fooddata table
+                    # in the Product table
                     self.cursor.execute("""
-                    INSERT IGNORE INTO FoodData (
-                        product_name,
-                        brands,
-                        nutriscore_grade,
-                        url,
-                        stores,
-                        category_id)
-                    VALUES (%s, %s, %s, %s, %s, %s)""", self.product)
-            # Save all the change in the mysql database
-            self.connexion.commit()
+                        INSERT IGNORE INTO Product (
+                            product_name,
+                            brands,
+                            nutriscore_grade,
+                            url,
+                            stores,
+                            category_id)
+                        VALUES (%s, %s, %s, %s, %s, %s)""", self.product)
+        # Save all the change in the mysql database
+        self.connexion.commit()
+
+if __name__ == "main":
+    connexion = Connexion_mysql()
+    init = Init_db(connexion.connexion)

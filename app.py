@@ -1,4 +1,4 @@
-class Data:
+class App:
 
     def __init__(self, connexion):
         # Initialize the class
@@ -27,13 +27,13 @@ class Data:
             "\nEntrez le chiffre correspondant à votre choix "
             "puis pressez sur ENTER :\n")
         print("\n----------------------------------------")
-        # Sql request who get the needful data to choose after a product
-        self.request = '''
-        SELECT id, product_name
-        FROM FoodData
-        WHERE category_id = %s'''
         # Check if the  category choice is correct
         if 1 <= int(self.choice_category) <= 5:
+            # Sql request who get the needful data to choose after a product
+            self.request = '''
+            SELECT id, product_name
+            FROM Product
+            WHERE category_id = %s'''
             # Execute the sql request
             self.cursor.execute(self.request, (int(self.choice_category), ))
             # Recover query result to be used as a python variable
@@ -69,7 +69,7 @@ class Data:
             ' ou 0 pour revenir au choix de la catégorie'
             "\nPuis pressez sur ENTER :\n")
         # Sql request who get all data of the selected product
-        self.request_product = '''SELECT * FROM FoodData WHERE id = %s'''
+        self.request_product = '''SELECT * FROM Product WHERE id = %s'''
         # Check if the number is in the right category of product
         if ((24 * (int(self.choice_category) - 1)) +
             1) <= int(self.choice_product) <= (24 *
@@ -109,7 +109,7 @@ class Data:
             # Sql request who get the wanted data of the substitutes
             self.request_substitute = '''
             SELECT id, product_name, nutriscore_grade
-            FROM FoodData where category_id = %s
+            FROM Product where category_id = %s
             AND nutriscore_grade IS NOT NULL
             AND id != %s LIMIT 5'''
             # Execute the sql request
@@ -130,7 +130,7 @@ class Data:
         elif self.product[3] == 'b':
             self.request_substitute = '''
             SELECT id, product_name, nutriscore_grade
-            FROM FoodData where category_id = %s
+            FROM Product where category_id = %s
             AND nutriscore_grade IN ('b', 'a')
             AND nutriscore_grade IS NOT NULL
             AND id != %s LIMIT 5'''
@@ -145,7 +145,7 @@ class Data:
         elif self.product[3] == 'c':
             self.request_substitute = '''
             SELECT id, product_name, nutriscore_grade
-            FROM FoodData where category_id = %s
+            FROM Product where category_id = %s
             AND nutriscore_grade IN ('c', 'b', 'a')
             AND nutriscore_grade IS NOT NULL
             AND id != %s LIMIT 5'''
@@ -160,7 +160,7 @@ class Data:
         elif self.product[3] == 'd':
             self.request_substitute = '''
             SELECT id, product_name, nutriscore_grade
-            FROM FoodData where category_id = %s
+            FROM Product where category_id = %s
             AND nutriscore_grade IN ('c', 'b', 'a')
             AND nutriscore_grade IS NOT NULL
             AND id != %s LIMIT 5'''
@@ -175,7 +175,7 @@ class Data:
         elif self.product[3] == 'e':
             self.request_substitute = '''
             SELECT id, product_name, nutriscore_grade
-            FROM FoodData where category_id = %s
+            FROM Product where category_id = %s
             AND nutriscore_grade != 'e'
             AND nutriscore_grade IS NOT NULL
             AND id != %s LIMIT 5'''
@@ -204,7 +204,7 @@ class Data:
             'ou 0 pour revenir au choix de la catégorie'
             "\nPuis pressez sur ENTER :\n")
         # Sql request who get the data of the selected substitute product
-        self.request_product = 'SELECT * FROM FoodData WHERE id = %s'
+        self.request_product = 'SELECT * FROM Product WHERE id = %s'
         # Check if the number is in the substitute number list
         if int(self.choice_substitute) in self.sub_number:
             # Execute the sql request
@@ -303,7 +303,7 @@ class Data:
                     nutriscore_grade,
                     url,
                     stores
-                    FROM FoodData
+                    FROM Product
                     WHERE id = %s'''
                     # Execute the sql request
                     self.cursor.execute(self.request, (self.records[i][k], ))
