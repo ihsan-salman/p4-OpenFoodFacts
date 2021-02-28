@@ -27,6 +27,7 @@ class Menu:
     def get_choice(self):
         # Ask a number and send the user to the corresponding choice
         # until the correct answer is given
+        # return a message if the user enter another caracter than a number
         try:
             # Ask a number
             self.choice = input(

@@ -24,6 +24,7 @@ class App:
     def choose_category(self):
         # Ask a number to the display after all products of the category
         self.category_id_list = []
+        # send a message if the user enter another caracter than a number
         try:
             self.choice_category = input(
                 "-------------------------------------------------------"

@@ -163,6 +163,7 @@ class Init_db:
         self.connexion.commit()
 
 
+# if main modul is executed the following code is executed
 if __name__ == "__main__":
     connexion = Connexion_mysql(os.environ)
     init = Init_db(connexion.connexion)
