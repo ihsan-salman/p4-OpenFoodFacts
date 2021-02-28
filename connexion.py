@@ -13,9 +13,6 @@ class Connexion_mysql:
 
     def connexion(self):
         # Make connexion to the sql server
-        self.environ["MYSQL_USERNAME"] = "ihsan"
-        self.environ["MYSQL_PASSWORD"] = "ihsan"
-        self.environ["MYSQL_DATABASE"] = "OPF"
         self.connexion = mysql.connector.connect(
             host="localhost",
             user=self.environ["MYSQL_USERNAME"],
