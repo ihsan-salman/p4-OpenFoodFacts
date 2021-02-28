@@ -20,18 +20,44 @@ finally, use the requirement document by entering the following command in the t
 ```bash
 pip3 install -r requirements.txt
 ```
+Before starting the program, please be sure that you have your mysql username, password and the database name.  
+You have two choice to connect your database:  
+- using environment variable with the following tutorial  
+First, install [virtualenv](https://pypi.org/project/virtualenv/) by entering the following code in the terminal:
+```bash
+sudo pip3 install virtualenv 
+```
+After that, create your virtual environment by entering the following code in the terminal:
+```bash
+virtualenv <name_of_your_environment>
+```
+then activate your virtual environment:
+```bash
+source <name_of_your_environment>/bin/activate
+```
+Finally, create the 3 environment variable by entering the following command in the terminal:
+```bash
+export MYSQL_USERNAME=<your_mysql_username>
+export MYSQL_PASSWORD=<your_mysql_password>
+export MYSQL_DATABASE=<your_mysql_database_name>
+```
+- edit the connexion.py modul by changing 3 information between line 18 and 20 like this:
+```bash
+user=<your_mysql_username>,
+password=<your_mysql_password>,
+database=<your_mysql_database_name>)
+```  
+if you doesn't have any database in Mysql, create one with the following command in your Mysql terminal:
+```bash
+CREATE DATABASE <name_of_your database>;
+```
+
 # How to use the program
 
 To start the program, enter the following command in the terminal:
 ```bash
 python3 main.py
 ```
- 
-if you doesn't have any database in Mysql, create one with the following command in your Mysql terminal:
-```bash
-CREATE DATABASE <name_of_your database>;
-```
-
 
 You can surf in the menu by entering numbers corresponding to the each choice given in the screen.  
 Be sure to use just numbers to surf in program!

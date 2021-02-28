@@ -17,43 +17,47 @@ class App:
         # Run the list and print the category name
         for record in self.records:
             print(record)
-        # Instantiate the choose category method
         self.choose_category()
+        self.display_product()
+        self.finding_substitute()
 
     def choose_category(self):
         # Ask a number to the display after all products of the category
         self.category_id_list = []
-        self.choice_category = input(
-            "-------------------------------------------------------"
-            "\nEntrez le chiffre correspondant à votre choix "
-            "puis pressez sur ENTER :\n")
-        print("\n----------------------------------------")
-        # Sql request who get the category id
-        self.cursor.execute('''SELECT id FROM Category''')
-        # Recover query result to be used as a python variable
-        self.records = self.cursor.fetchall()
-        for i in range(len(self.records)):
-            self.category_id_list.append(self.records[i][0])
-        # Check if the  category choice is correct
-        if int(self.choice_category) in self.category_id_list:
-            # Sql request who get the needful data to choose after a product
-            self.request = '''
-            SELECT id, product_name
-            FROM Product
-            WHERE category_id = %s'''
-            # Execute the sql request
-            self.cursor.execute(self.request, (int(self.choice_category), ))
+        try:
+            self.choice_category = input(
+                "-------------------------------------------------------"
+                "\nEntrez le chiffre correspondant à votre choix "
+                "puis pressez sur ENTER :\n")
+            print("\n----------------------------------------")
+            # Sql request who get the category id
+            self.cursor.execute('''SELECT id FROM Category''')
             # Recover query result to be used as a python variable
             self.records = self.cursor.fetchall()
-        # Return a message if the choice isn't correct
-        else:
-            print("\n\nVotre choix n'est pas valable!"
-                  " Veuillez entrez un nombre valide"
-                  "\n------------------------------------------------------")
-            # Instantiate the display category method to go back
+            for i in range(len(self.records)):
+                self.category_id_list.append(self.records[i][0])
+            # Check if the  category choice is correct
+            if int(self.choice_category) in self.category_id_list:
+                # Sql request who get the needful data to choose a product
+                self.request = '''
+                SELECT id, product_name
+                FROM Product
+                WHERE category_id = %s'''
+                # Execute the sql request
+                self.cursor.execute(self.request,
+                                    (int(self.choice_category), ))
+                # Recover query result to be used as a python variable
+                self.records = self.cursor.fetchall()
+            # Return a message if the choice isn't correct
+            else:
+                print("\n\nVotre choix n'est pas valable!"
+                      " Veuillez entrez un nombre valide"
+                      "\n----------------------------------------------------")
+                # Instantiate the display category method to go back
+                self.display_category()
+        except ValueError:
+            print('\nVous avez utilisez un autre caractère!\n')
             self.display_category()
-        # Instantiate the display product method
-        self.display_product()
 
     def display_product(self):
         # display all product of the selected category
@@ -69,42 +73,44 @@ class App:
         # Ask a number to the user corresponding to the selected product
         # List who will contain the needful data of the selected product
         self.product = []
-        # Ask a number
-        self.choice_product = input(
-            "-------------------------------------------------------"
-            "\nEntrez le chiffre correspondant à votre produit "
-            ' ou 0 pour revenir au choix de la catégorie'
-            "\nPuis pressez sur ENTER :\n")
-        # Sql request who get all data of the selected product
-        self.request_product = '''SELECT * FROM Product WHERE id = %s'''
-        # Check if the number is in the right category of product
-        if ((24 * (int(self.choice_category) - 1)) +
-            1) <= int(self.choice_product) <= (24 *
-                                               int(self.choice_category)):
-            # Execute the sql request
-            self.cursor.execute(self.request_product,
-                                (int(self.choice_product), ))
-            # Recover query result to be used as a python variable
-            self.records_product = self.cursor.fetchall()
-            # Run the list
-            for record in self.records_product:
-                # Add the product data to the corresponding list
-                self.product = record
-            # Display the selected product name
-            print('\n---------------------------------------------------------'
-                  '\nVous avez choisi:', self.product[1])
-        # if the choice is 0, go back to the before step
-        elif self.choice_product == '0':
-            self.display_category()
-        # Return a message if the choice isn't correct
-        else:
-            print("\n\nVotre choix n'est pas valable!"
-                  " Veuillez entrez un nombre valide"
-                  "\n------------------------------------------------------")
-            # Instantiate the display product method to go back
+        try:
+            # Ask a number
+            self.choice_product = input(
+                "-------------------------------------------------------"
+                "\nEntrez le chiffre correspondant à votre produit "
+                ' ou 0 pour revenir au choix de la catégorie'
+                "\nPuis pressez sur ENTER :\n")
+            # Sql request who get all data of the selected product
+            self.request_product = '''SELECT * FROM Product WHERE id = %s'''
+            # Check if the number is in the right category of product
+            if ((24 * (int(self.choice_category) - 1)) +
+                1) <= int(self.choice_product) <= (24 *
+                                                   int(self.choice_category)):
+                # Execute the sql request
+                self.cursor.execute(self.request_product,
+                                    (int(self.choice_product), ))
+                # Recover query result to be used as a python variable
+                self.records_product = self.cursor.fetchall()
+                # Run the list
+                for record in self.records_product:
+                    # Add the product data to the corresponding list
+                    self.product = record
+                # Display the selected product name
+                print('\n-----------------------------------------------------'
+                      '\nVous avez choisi:', self.product[1])
+            # if the choice is 0, go back to the before step
+            elif self.choice_product == '0':
+                self.display_category()
+            # Return a message if the choice isn't correct
+            else:
+                print("\n\nVotre choix n'est pas valable!"
+                      " Veuillez entrez un nombre valide"
+                      "\n----------------------------------------------------")
+                # Instantiate the display product method to go back
+                self.display_product()
+        except ValueError:
+            print('\nVous avez utilisez un autre caractère!\n')
             self.display_product()
-        # Instantiate the finding substitute method
-        self.finding_substitute()
 
     def finding_substitute(self):
         # Find all the substitute of the product from the nutriscore grade
@@ -204,39 +210,43 @@ class App:
         # Ask a number to choose the substitute
         # list who will contain the data of the selected substitute product
         self.substitute = []
-        # Ask a number
-        self.choice_substitute = input(
-            "-------------------------------------------------------"
-            "\nEntrez le chiffre correspondant à votre substitut "
-            'ou 0 pour revenir au choix de la catégorie'
-            "\nPuis pressez sur ENTER :\n")
-        # Sql request who get the data of the selected substitute product
-        self.request_product = 'SELECT * FROM Product WHERE id = %s'
-        # Check if the number is in the substitute number list
-        if int(self.choice_substitute) in self.sub_number:
-            # Execute the sql request
-            self.cursor.execute(self.request_product,
-                                (int(self.choice_substitute), ))
-            # Recover query result to be used as a python variable
-            self.records_subtitute = self.cursor.fetchall()
-            # Run the list
-            for record in self.records_subtitute:
-                # Add data to the substitute product list
-                self.substitute = record
-            # Display the substitute product name
-            print('\n---------------------------------------------------------'
-                  '\nVous avez choisi:', self.substitute[1])
-            # Instantiate the display prod vs sub method
-            self.display_prod_vs_sub()
-        # if the choice is 0, send to the before step to the choose a product
-        elif self.choice_substitute == '0':
-            self.display_product()
-        # Return a message if the choice isn't correct
-        else:
-            print("\n\nVotre choix n'est pas valable!"
-                  " Veuillez entrez un nombre valide"
-                  "\n------------------------------------------------------")
-            # Send to the display substitute step
+        try:
+            # Ask a number
+            self.choice_substitute = input(
+                "-------------------------------------------------------"
+                "\nEntrez le chiffre correspondant à votre substitut "
+                'ou 0 pour revenir au choix de la catégorie'
+                "\nPuis pressez sur ENTER :\n")
+            # Sql request who get the data of the selected substitute product
+            self.request_product = 'SELECT * FROM Product WHERE id = %s'
+            # Check if the number is in the substitute number list
+            if int(self.choice_substitute) in self.sub_number:
+                # Execute the sql request
+                self.cursor.execute(self.request_product,
+                                    (int(self.choice_substitute), ))
+                # Recover query result to be used as a python variable
+                self.records_subtitute = self.cursor.fetchall()
+                # Run the list
+                for record in self.records_subtitute:
+                    # Add data to the substitute product list
+                    self.substitute = record
+                # Display the substitute product name
+                print('\n-----------------------------------------------------'
+                      '\nVous avez choisi:', self.substitute[1])
+                # Instantiate the display prod vs sub method
+                self.display_prod_vs_sub()
+            # if the choice is 0, send toto choose a product
+            elif self.choice_substitute == '0':
+                self.display_product()
+            # Return a message if the choice isn't correct
+            else:
+                print("\n\nVotre choix n'est pas valable!"
+                      " Veuillez entrez un nombre valide"
+                      "\n----------------------------------------------------")
+                # Send to the display substitute step
+                self.finding_substitute()
+        except ValueError:
+            print('\nVous avez utilisez un autre caractère!\n')
             self.finding_substitute()
 
     def display_prod_vs_sub(self):
@@ -250,23 +260,27 @@ class App:
               '\nsubstitut choisis:', self.substitute[1],
               '\ncomparatif des scores nutritionnels:',
               self.product[3], 'VS', self.substitute[3])
-        # Ask a number
-        self.choice = input(
-            '\n-----------------------------------------------------------'
-            '\nEntrez 0 pour revenir arrière '
-            '\nOu 1 pour enregister ces produits dans votre base de données\n')
-        # Send back if the choice is 0
-        if self.choice == '0':
-            self.finding_substitute()
-        # Save the product in the favorite product's table if choice is 1
-        elif self.choice == '1':
-            self.save_prod_sub()
-        # Return a message if the choice isn' correct
-        else:
-            print('Votre choix est incorrecte!'
-                  'Veuillez entrez un choix valide')
-            # Ask again a number
-            self.display_prod_vs_sub()
+        try:
+            # Ask a number
+            self.choice = input(
+                '\n-----------------------------------------------------------'
+                '\nEntrez 0 pour revenir arrière '
+                '\nOu 1 pour enregister ces produits\n')
+            # Send back if the choice is 0
+            if self.choice == '0':
+                self.finding_substitute()
+            # Save the product in the favorite product's table if choice is 1
+            elif self.choice == '1':
+                self.save_prod_sub()
+            # Return a message if the choice isn' correct
+            else:
+                print('Votre choix est incorrecte!'
+                      'Veuillez entrez un choix valide')
+                # Ask again a number
+                self.display_prod_vs_sub()
+        except ValueError:
+            print('\nVous avez utilisez un autre caractère!\n')
+            self.choose_substitute()
 
     def save_prod_sub(self):
         # Save the product in the favorite product's table
