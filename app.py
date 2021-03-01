@@ -118,20 +118,8 @@ class App:
             self.request_substitute = '''
             SELECT id, product_name, nutriscore_grade
             FROM Product where category_id = %s
-            AND nutriscore_grade IS NOT NULL
-            AND id != %s LIMIT 5'''
-            # Execute the sql request
-            self.cursor.execute(self.request_substitute,
-                                (int(self.choice_category),
-                                 int(self.choice_product), ))
-            # Recover query result to be used as a python variable
-            self.records_product = self.cursor.fetchall()
-            # Run the list
-            for record in self.records_product:
-                # Add all the substitutes number
-                self.sub_number.append(record[0])
-                # Display the data of each find substitute
-                print(record)
+            AND nutriscore_grade IS NOT NULL AND id != %s LIMIT 5'''
+            self.display_substitute()
             # Instantiate the choose substitute method
             self.choose_substitute()
         # Same as before
@@ -140,66 +128,52 @@ class App:
             SELECT id, product_name, nutriscore_grade
             FROM Product where category_id = %s
             AND nutriscore_grade IN ('b', 'a')
-            AND nutriscore_grade IS NOT NULL
-            AND id != %s LIMIT 5'''
-            self.cursor.execute(self.request_substitute,
-                                (int(self.choice_category),
-                                 int(self.choice_product), ))
-            self.records_product = self.cursor.fetchall()
-            for record in self.records_product:
-                self.sub_number.append(record[0])
-                print(record)
+            AND nutriscore_grade IS NOT NULL AND id != %s LIMIT 5'''
+            self.display_substitute()
             self.choose_substitute()
         elif self.product[3] == 'c':
             self.request_substitute = '''
             SELECT id, product_name, nutriscore_grade
             FROM Product where category_id = %s
             AND nutriscore_grade IN ('c', 'b', 'a')
-            AND nutriscore_grade IS NOT NULL
-            AND id != %s LIMIT 5'''
-            self.cursor.execute(self.request_substitute,
-                                (int(self.choice_category),
-                                 int(self.choice_product), ))
-            self.records_product = self.cursor.fetchall()
-            for record in self.records_product:
-                self.sub_number.append(record[0])
-                print(record)
+            AND nutriscore_grade IS NOT NULL AND id != %s LIMIT 5'''
+            self.display_substitute()
             self.choose_substitute()
         elif self.product[3] == 'd':
             self.request_substitute = '''
             SELECT id, product_name, nutriscore_grade
             FROM Product where category_id = %s
             AND nutriscore_grade IN ('c', 'b', 'a')
-            AND nutriscore_grade IS NOT NULL
-            AND id != %s LIMIT 5'''
-            self.cursor.execute(self.request_substitute,
-                                (int(self.choice_category),
-                                 int(self.choice_product), ))
-            self.records_product = self.cursor.fetchall()
-            for record in self.records_product:
-                self.sub_number.append(record[0])
-                print(record)
+            AND nutriscore_grade IS NOT NULL AND id != %s LIMIT 5'''
+            self.display_substitute()
             self.choose_substitute()
         elif self.product[3] == 'e':
             self.request_substitute = '''
             SELECT id, product_name, nutriscore_grade
             FROM Product where category_id = %s
             AND nutriscore_grade != 'e'
-            AND nutriscore_grade IS NOT NULL
-            AND id != %s LIMIT 5'''
-            self.cursor.execute(self.request_substitute,
-                                (int(self.choice_category),
-                                 int(self.choice_product), ))
-            self.records_product = self.cursor.fetchall()
-            for record in self.records_product:
-                self.sub_number.append(record[0])
-                print(record)
+            AND nutriscore_grade IS NOT NULL AND id != %s LIMIT 5'''
+            self.display_substitute()
             self.choose_substitute()
         # Return a message if there is no substitute for the selected product
         elif self.sub_number == []:
             print('il y a aucun substitut à votre produit\n')
             # Send to the product choice
             self.category.display_product()
+
+    def display_substitute(self):
+    	# Execute the sql request
+        self.cursor.execute(self.request_substitute,
+                            (int(self.choice_category),
+                             int(self.choice_product), ))
+        # Recover query result to be used as a python variable
+        self.records_product = self.cursor.fetchall()
+        # Run the list
+        for record in self.records_product:
+            # Add all the substitutes number
+            self.sub_number.append(record[0])
+            # Display the data of each find substitute
+            print(record)
 
     def choose_substitute(self):
         # Ask a number to choose the substitute
