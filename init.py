@@ -85,11 +85,6 @@ class Init_db:
 
     def insert_category(self):
         # Input the categories name if the table is empty
-        # Sql request who set all foreign keys at OFF mode
-        self.cursor.execute('''SET FOREIGN_KEY_CHECKS = 0''')
-        # Sql request who delete all data
-        # in a table with the id auto-incremented
-        self.cursor.execute('''TRUNCATE TABLE Category''')
         # Sql request who give the line number of the table
         self.request = '''SELECT COUNT(*) FROM Category'''
         # Execute the sql request
@@ -108,9 +103,6 @@ class Init_db:
 
     def insert_product(self):
         # Input the fooddata if the table is empty
-        self.cursor.execute('''TRUNCATE TABLE Product''')
-        # Sql request who set all foreign keys at ON mode
-        self.cursor.execute('''SET FOREIGN_KEY_CHECKS = 1''')
         # Sql request who get the Category id
         self.cursor.execute('''SELECT id FROM Category''')
         self.record = self.cursor.fetchall()
@@ -163,7 +155,7 @@ class Init_db:
         self.connexion.commit()
 
 
-# if main modul is executed the following code is executed
+# if this modul is executed the following code is executed
 if __name__ == "__main__":
     connexion = Connexion_mysql(os.environ)
     init = Init_db(connexion.connexion)

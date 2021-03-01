@@ -37,12 +37,14 @@ source <name_of_your_environment>/bin/activate
 ```
 Finally, create the 3 environment variable by entering the following command in the terminal:
 ```bash
+export MYSQL_CONNEXION_TYPE=<your_connexion_type> # "localhost" most of time
 export MYSQL_USERNAME=<your_mysql_username>
 export MYSQL_PASSWORD=<your_mysql_password>
 export MYSQL_DATABASE=<your_mysql_database_name>
 ```
-- edit the connexion.py modul by changing 3 information between line 18 and 20 like this:
+- edit the connexion.py modul by changing 3 information between line 17 and 20 like this:
 ```bash
+host=<your_connexion_type> # "localhost" most of time
 user=<your_mysql_username>,
 password=<your_mysql_password>,
 database=<your_mysql_database_name>)

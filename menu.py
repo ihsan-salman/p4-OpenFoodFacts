@@ -3,8 +3,9 @@
 
 class Menu:
 
-    def __init__(self, data):
-        self.data = data
+    def __init__(self, favorite, app):
+        self.favorite = favorite
+        self.app = app
         self.welcome()
         self.display_menu()
 
@@ -42,7 +43,7 @@ class Menu:
                   "\nVous voulez trouver un aliment de substitution !"
                   "\n------------------------------------------------")
             # Send to the food category
-            self.data.display_category()
+            self.app.display_category()
             # When the step before is over, display the menu again
             self.display_menu()
         elif self.choice == "2":
@@ -50,13 +51,13 @@ class Menu:
                   '\nVous voulez voir vos aliments substitués !'
                   '\n-------------------------------------------')
             # Send to the saved product
-            self.data.display_saved_prod()
+            self.favorite.display_saved_prod()
             self.display_menu()
         elif self.choice == "3":
             print("\n------------------------------------------------"
                   "\nVous voulez réinitialiser votre base de données !"
                   "\n------------------------------------------------")
-            self.data.delete_saved_prod()
+            self.favorite.delete_saved_prod()
             # Display a message after deleting the saved products
             self.display_menu()
         elif self.choice == "4":
