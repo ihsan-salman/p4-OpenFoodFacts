@@ -162,7 +162,7 @@ class App:
             self.category.display_product()
 
     def display_substitute(self):
-    	# Execute the sql request
+        # Execute the sql request
         self.cursor.execute(self.request_substitute,
                             (int(self.choice_category),
                              int(self.choice_product), ))
