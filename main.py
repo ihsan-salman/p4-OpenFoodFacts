@@ -1,17 +1,23 @@
-﻿#!/usr/bin/python3
-# -*- coding: Utf-8 -*
+﻿'''!/usr/bin/python3
+   -*- coding: Utf-8 -'''
 
-# Importation of moduls
+from os import environ
 from menu import Menu
 from fav import Favorite
 from app import App
-from connexion import Connexion_mysql
-from init import Init_db
-from os import environ
+from connexion import Connexion
+from init import Init
 
-# Instances of classes
-connexion = Connexion_mysql(environ)
-Init_db(connexion.connexion)
-favorite = Favorite(connexion.connexion)
-app = App(connexion.connexion)
-menu = Menu(favorite, app)
+
+def main():
+    '''main function instantiate all class'''
+    # Instances of classes
+    connexion = Connexion(environ)
+    Init(connexion.connexion_mysql)
+    favorite = Favorite(connexion.connexion_mysql)
+    app = App(connexion.connexion_mysql)
+    Menu(favorite, app)
+
+
+if __name__ == "__main__":
+    main()

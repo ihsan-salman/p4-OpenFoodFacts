@@ -1,22 +1,21 @@
-"""Main menu's reponsable class"""
+''' Importation of the moduls '''
+import sys
 
 
 class Menu:
+    '''Main menu's reponsable class'''
 
     def __init__(self, favorite, app):
         self.favorite = favorite
         self.app = app
-        self.welcome()
+        self.choice = None
+        self.welcome = print('---------------------------------'
+                             '\nBienvenue dans OpenfoodFacts data'
+                             '\n---------------------------------')
         self.display_menu()
 
-    def welcome(self):
-        # Display  at the biginning a welcoming message
-        print('---------------------------------'
-              '\nBienvenue dans OpenfoodFacts data'
-              '\n---------------------------------')
-
     def display_menu(self):
-        # Display the menu with all choice
+        '''Display the menu with all choice'''
         print("\n-----------------------------------------------"
               "\n1 - Selectionner une catégorie ")
         print("2 - Retrouver mes aliments substitués.")
@@ -26,8 +25,8 @@ class Menu:
         self.get_choice()
 
     def get_choice(self):
-        # Ask a number and send the user to the corresponding choice
-        # until the correct answer is given
+        '''Ask a number and send the user to the corresponding choice
+           until the correct answer is given'''
         # return a message if the user enter another caracter than a number
         try:
             # Ask a number
@@ -63,7 +62,7 @@ class Menu:
         elif self.choice == "4":
             # Display a bye message and close the program
             print("A bientôt ! \nFermeture du programme...")
-            exit()
+            sys.exit()
         # If the choice isn't correct
         # display a message and send to the menu
         else:

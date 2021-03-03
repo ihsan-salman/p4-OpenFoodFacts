@@ -1,12 +1,11 @@
-# Importation of the moduls
-import requests
-from connexion import Connexion_mysql
+'''Importation of the moduls'''
 import os
+import requests
+from connexion import Connexion
 
-''''''
 
-
-class Init_db:
+class Init:
+    """Class responsible for initilization the database"""
 
     def __init__(self, connexion):
         # Initialize the class
@@ -37,7 +36,7 @@ class Init_db:
         self.insert_product()
 
     def table_creation(self):
-        # Create the 3  needful table to the program
+        '''Create the 3  needful table to the program'''
         # Creation of the category table
         self.cursor.execute("""
         CREATE TABLE IF NOT EXISTS Category(
@@ -72,8 +71,8 @@ class Init_db:
         ;""")
 
     def get_category(self):
-        # Make requests to the OpenfoodFacts API
-        # to get the data of each category
+        '''Make requests to the OpenfoodFacts API
+           to get the data of each category'''
         # Run the category list
         for i in range(len(self.category_table)):
             # Request to the API
@@ -84,7 +83,7 @@ class Init_db:
             self.product_categorie.append(self.json_category)
 
     def insert_category(self):
-        # Input the categories name if the table is empty
+        '''Input the categories name if the table is empty'''
         # Sql request who give the line number of the table
         self.request = '''SELECT COUNT(*) FROM Category'''
         # Execute the sql request
@@ -93,16 +92,16 @@ class Init_db:
         self.record = self.cursor.fetchall()
         # Check if the category table is empty
         if self.record[0][0] != len(self.category_table):
-            for i in range(len(self.category_table)):
+            for category in self.category_table:
                 # Insert the name of the category in the table
                 self.cursor.execute('''
                     INSERT IGNORE INTO Category (name)
-                    VALUES (%s)''', (self.category_table[i][0], ))
+                    VALUES (%s)''', (category[0], ))
             # Save all the change in the mysql database
             self.connexion.commit()
 
     def insert_product(self):
-        # Input the fooddata if the table is empty
+        '''Input the fooddata if the table is empty'''
         # Sql request who get the Category id
         self.cursor.execute('''SELECT id FROM Category''')
         self.record = self.cursor.fetchall()
@@ -117,28 +116,12 @@ class Init_db:
                 # Run the json data of each product
                 for product in self.product_categorie[i]['products']:
                     # Check if the wanted data are in the json data
-                    if 'nutriscore_grade' in product and product[
-                       'nutriscore_grade'] != '':
-                        nutriscore_grade = product['nutriscore_grade']
-                    # return None if it's not the case
-                    else:
-                        nutriscore_grade = None
-
-                    if 'brands' in product and product['brands'] != '':
-                        brands = product['brands']
-                    else:
-                        brands = None
-
-                    if 'stores' in product and product['stores'] != '':
-                        stores = product['stores']
-                    else:
-                        stores = None
-                    # Add all the data in the product list
-                    self.product = [product['product_name'],
-                                    brands,
-                                    nutriscore_grade,
-                                    product['url'],
-                                    stores,
+                    #  And add all the data in the product list
+                    self.product = [product.get('product_name'),
+                                    product.get('brands'),
+                                    product.get('nutriscore_grade'),
+                                    product.get('url'),
+                                    product.get('stores'),
                                     self.category_id[i][0]]
                     # Insert all the data of each product
                     # in the Product table
@@ -157,5 +140,5 @@ class Init_db:
 
 # if this modul is executed the following code is executed
 if __name__ == "__main__":
-    connexion = Connexion_mysql(os.environ)
-    init = Init_db(connexion.connexion)
+    CONNEXION = Connexion(os.environ)
+    INIT = Init(CONNEXION.connexion)

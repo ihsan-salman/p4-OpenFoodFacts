@@ -1,13 +1,23 @@
+'''!/usr/bin/python3
+   -*- coding: Utf-8 -'''
+
+
 class Favorite:
+    """
+    Class responsible of display favorite product or delete them
+    """
 
     def __init__(self, connexion):
         # Recover the connexion to the slq server
         self.connexion = connexion
         # Recover the cursor fonction to use the sql requests
         self.cursor = self.connexion.cursor()
+        self.records = []
+        self.records_fav = []
+        self.request = None
 
     def display_saved_prod(self):
-        # Display all the saved product
+        '''Display all the saved product'''
         # Execute the sql request who get all from favorite product's table
         self.cursor.execute('SELECT * FROM favorite_product')
         # Recover query result to be used as a python variable
@@ -53,7 +63,7 @@ class Favorite:
             print('\nvous avez enregistrés aucune données')
 
     def delete_saved_prod(self):
-        # Delele the saved products
+        '''Delele the saved products'''
         # Sql request who delete all the saved product in the table
         self.request = '''
         DELETE FROM favorite_product'''
