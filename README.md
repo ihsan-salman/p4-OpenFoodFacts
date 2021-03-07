@@ -9,7 +9,8 @@ first of all, download [Python](https://www.python.org/) by going in the officia
 
 then, install [Pip](https://pypi.org/project/pip/) by entering in the terminal the following command line:
 ```bash
-python3 -m pip --version
+python3 -m pip --version  #for unix/mac
+python get-pip.py         #for windows
 ```
 after that, you have the choice to download the zip of the code or clone with the following command Line:
 ```bash
@@ -18,7 +19,8 @@ git clone https://github.com/ihsan-salman/p5-OpenFoodFacts.git
 
 finally, use the requirement document by entering the following command in the terminal:
 ```bash
-pip3 install -r requirements.txt
+pip3 install -r requirements.txt      # for unix
+pip install -r requirements.txt       # for windows/mac
 ```
 Before starting the program, please be sure that you have your mysql username, password and the database name.  
 You have two choice to connect your database:  
@@ -37,17 +39,10 @@ source <name_of_your_environment>/bin/activate
 ```
 Finally, create the 3 environment variable by entering the following command in the terminal:
 ```bash
-export MYSQL_CONNEXION_TYPE=<your_connexion_type> # "localhost" most of time
+export MYSQL_CONNEXION_TYPE=<your_connexion_type>   # "localhost" most of time
 export MYSQL_USERNAME=<your_mysql_username>
 export MYSQL_PASSWORD=<your_mysql_password>
 export MYSQL_DATABASE=<your_mysql_database_name>
-```
-- edit the connexion.py modul by changing 3 information between line 17 and 20 like this:
-```bash
-host=<your_connexion_type> # "localhost" most of time
-user=<your_mysql_username>,
-password=<your_mysql_password>,
-database=<your_mysql_database_name>)
 ```  
 if you doesn't have any database in Mysql, create one with the following command in your Mysql terminal:
 ```bash
