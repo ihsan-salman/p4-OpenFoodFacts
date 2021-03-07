@@ -17,11 +17,6 @@ after that, you have the choice to download the zip of the code or clone with th
 git clone https://github.com/ihsan-salman/p5-OpenFoodFacts.git
 ```
 
-finally, use the requirement document by entering the following command in the terminal:
-```bash
-pip3 install -r requirements.txt      # for unix
-pip install -r requirements.txt       # for windows/mac
-```
 Before starting the program, please be sure that you have your mysql username, password and the database name.  
 You have to use environment variable with the following tutorial:    
 First, install [virtualenv](https://pypi.org/project/virtualenv/) by entering the following code in the terminal:
@@ -47,7 +42,11 @@ if you doesn't have any database in Mysql, create one with the following command
 ```bash
 CREATE DATABASE <name_of_your database>;
 ```
-
+finally, use the requirement document by entering the following command in the terminal:
+```bash
+pip3 install -r requirements.txt      # for unix
+pip install -r requirements.txt       # for windows/mac
+```
 # How to use the program
 
 To start the program, enter the following command in the terminal:
