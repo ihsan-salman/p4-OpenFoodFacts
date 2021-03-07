@@ -6,7 +6,7 @@ from menu import Menu
 from fav import SavedProd
 from app import App
 from connexion import Connexion
-from init import Init
+from base import Init
 from category import Category
 from product import Product
 from favorite import Favorite
