@@ -23,8 +23,7 @@ pip3 install -r requirements.txt      # for unix
 pip install -r requirements.txt       # for windows/mac
 ```
 Before starting the program, please be sure that you have your mysql username, password and the database name.  
-You have two choice to connect your database:  
-- using environment variable with the following tutorial  
+You have to use environment variable with the following tutorial:    
 First, install [virtualenv](https://pypi.org/project/virtualenv/) by entering the following code in the terminal:
 ```bash
 sudo pip3 install virtualenv 
