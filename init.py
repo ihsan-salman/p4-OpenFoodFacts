@@ -2,33 +2,34 @@
 import os
 import requests
 from connexion import Connexion
+from category import Category
+from product import Product
+from favorite import Favorite
 
 
 class Init:
     """Class responsible for initilization the database"""
 
-    def __init__(self, connexion):
+    def __init__(self, connexion, category, product, favorite):
         # Initialize the class
         # Recover the connexion to the slq server
         self.connexion = connexion
         # Recover the cursor fonction to use the sql requests
         self.cursor = self.connexion.cursor()
+        self.category = category
+        self.product = product
+        self.favorite = favorite
         # List who contain the name of the categories and their url
-        self.category_table = [
-            ('pizzas',
-             'https://world.openfoodfacts.org/category/pizzas.json'),
-            ('boissons_sucrées',
-             'https://world.openfoodfacts.org/category/sodas.json'),
-            ('glaces',
-             'https://world.openfoodfacts.org/category/ice-creams.json'),
-            ('biscuits',
-             'https://world.openfoodfacts.org/category/biscuits.json'),
-            ('eaux',
-             'https://world.openfoodfacts.org/category/waters.json')]
+        self.category_table = [('pizzas'),
+                               ('boissons sucrées'),
+                               ('glaces'),
+                               ('biscuits'),
+                               ('eaux')]
         # List who will contain the products data
-        self.product = []
+        self.product_data = []
         # List who will contain all the products data
         self.product_categorie = []
+        self.url = "https://fr.openfoodfacts.org/cgi/search.pl?"
         # Instantiate the table creation method
         self.table_creation()
         self.get_category()
@@ -38,45 +39,26 @@ class Init:
     def table_creation(self):
         '''Create the 3  needful table to the program'''
         # Creation of the category table
-        self.cursor.execute("""
-        CREATE TABLE IF NOT EXISTS Category(
-            id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
-            name char(50) NOT NULL
-        )
-        ;""")
+        self.category.create_category_table()
         # Creation of the products data table
-        self.cursor.execute("""
-        CREATE TABLE IF NOT EXISTS Product (
-            id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
-            product_name varchar(200) NOT NULL,
-            brands varchar(200),
-            nutriscore_grade char(1),
-            url char(200) NOT NULL,
-            stores varchar(100),
-            category_id INT NOT NULL,
-            CONSTRAINT fk_cat_id FOREIGN KEY (category_id)
-            REFERENCES Category(id)
-         )
-         ;""")
+        self.product.create_product_table()
         # Creation of the saved favorite products table
-        self.cursor.execute("""
-        CREATE TABLE IF NOT EXISTS favorite_product(
-            selected_product_id INT NOT NULL,
-            substitute_product_id INT NOT NULL,
-            CONSTRAINT fk_sel_prod_id FOREIGN KEY (selected_product_id)
-            REFERENCES Product(id),
-            CONSTRAINT fk_sub_prod_id FOREIGN KEY (substitute_product_id)
-            REFERENCES Product(id)
-        )
-        ;""")
+        self.favorite.create_favorite_table()
 
     def get_category(self):
         '''Make requests to the OpenfoodFacts API
            to get the data of each category'''
         # Run the category list
         for i in range(len(self.category_table)):
+            self.payload = {"search_terms": self.category_table[i],
+                            "json": 1,
+                            "action": "process",
+                            "lang": "fr",
+                            "page_size": "100",
+                            "page": "1"
+                            }
             # Request to the API
-            self.json_request = requests.get(self.category_table[i][1])
+            self.json_request = requests.get(self.url, params=self.payload,)
             # Export data as json data
             self.json_category = self.json_request.json()
             # Add all json data in a list to make easier the usage
@@ -84,61 +66,39 @@ class Init:
 
     def insert_category(self):
         '''Input the categories name if the table is empty'''
-        # Sql request who give the line number of the table
-        self.request = '''SELECT COUNT(*) FROM Category'''
-        # Execute the sql request
-        self.cursor.execute(self.request)
-        # Recover query result to be used as a python variable
-        self.record = self.cursor.fetchall()
+        self.count = self.category.count_category()
         # Check if the category table is empty
-        if self.record[0][0] != len(self.category_table):
+        if self.count != len(self.category_table):
             for category in self.category_table:
-                # Insert the name of the category in the table
-                self.cursor.execute('''
-                    INSERT IGNORE INTO Category (name)
-                    VALUES (%s)''', (category[0], ))
-            # Save all the change in the mysql database
-            self.connexion.commit()
+                self.category.insert_category_name(category)
 
     def insert_product(self):
-        '''Input the fooddata if the table is empty'''
-        # Sql request who get the Category id
-        self.cursor.execute('''SELECT id FROM Category''')
-        self.record = self.cursor.fetchall()
-        self.category_id = self.record
-        # Sql request who give the line number of the table
-        self.cursor.execute('''SELECT COUNT(*) FROM Product''')
-        self.record_product = self.cursor.fetchall()
+        '''Insert the product data if the table is empty'''
+        self.category_id = self.category.get_id()
+        self.count = self.product.count_product()
         # Check if the table's line number is different that 0
-        if self.record_product[0][0] != 120:
+        if self.count != 500:
             # Run the category list
             for i in range(len(self.category_table)):
                 # Run the json data of each product
                 for product in self.product_categorie[i]['products']:
                     # Check if the wanted data are in the json data
                     #  And add all the data in the product list
-                    self.product = [product.get('product_name'),
-                                    product.get('brands'),
-                                    product.get('nutriscore_grade'),
-                                    product.get('url'),
-                                    product.get('stores'),
-                                    self.category_id[i][0]]
+                    self.product_data = [product.get('product_name'),
+                                         product.get('brands'),
+                                         product.get('nutriscore_grade'),
+                                         product.get('url'),
+                                         product.get('stores'),
+                                         self.category_id[i][0]]
                     # Insert all the data of each product
                     # in the Product table
-                    self.cursor.execute("""
-                        INSERT IGNORE INTO Product (
-                            product_name,
-                            brands,
-                            nutriscore_grade,
-                            url,
-                            stores,
-                            category_id)
-                        VALUES (%s, %s, %s, %s, %s, %s)""", self.product)
-        # Save all the change in the mysql database
-        self.connexion.commit()
+                    self.product.insert_product_data(self.product_data)
 
 
 # if this modul is executed the following code is executed
 if __name__ == "__main__":
     CONNEXION = Connexion(os.environ)
-    INIT = Init(CONNEXION.connexion)
+    CATEGORY = Category(CONNEXION.connexion_mysql)
+    PRODUCT = Product(CONNEXION.connexion_mysql)
+    FAVORITE = Favorite(CONNEXION.connexion_mysql)
+    INIT = Init(CONNEXION.connexion_mysql, CATEGORY, PRODUCT, FAVORITE)

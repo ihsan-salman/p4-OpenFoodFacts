@@ -2,26 +2,23 @@
    -*- coding: Utf-8 -'''
 
 
-class Favorite:
+class SavedProd:
     """
     Class responsible of display favorite product or delete them
     """
 
-    def __init__(self, connexion):
+    def __init__(self, connexion, favorite):
         # Recover the connexion to the slq server
         self.connexion = connexion
         # Recover the cursor fonction to use the sql requests
         self.cursor = self.connexion.cursor()
-        self.records = []
-        self.records_fav = []
-        self.request = None
+        self.favorite = favorite
+        self.record = None
+        self.records = None
 
     def display_saved_prod(self):
         '''Display all the saved product'''
-        # Execute the sql request who get all from favorite product's table
-        self.cursor.execute('SELECT * FROM favorite_product')
-        # Recover query result to be used as a python variable
-        self.records = self.cursor.fetchall()
+        self.records = self.favorite.get_all()
         # Check if there are saved product
         if self.records != []:
             # Run the list of all saved product
@@ -29,21 +26,10 @@ class Favorite:
                 print('------------------------------------------------------')
                 # Run between the product and the substitute
                 for k in range(2):
-                    # Sql request who get the data of the product
-                    # and the substitute
-                    self.request = '''
-                    SELECT product_name,
-                    nutriscore_grade,
-                    url,
-                    stores
-                    FROM Product
-                    WHERE id = %s'''
-                    # Execute the sql request
-                    self.cursor.execute(self.request, (self.records[i][k], ))
-                    # Recover query result to be used as a python variable
-                    self.records_fav = self.cursor.fetchall()
+                    self.record = self.favorite.get_favorite_product_data(
+                        self.records[i][k])
                     # Run the list of the products
-                    for value in self.records_fav:
+                    for value in self.record:
                         # Check if it's the product or the substitute
                         if k == 0:
                             # Display the data of the product
@@ -64,12 +50,6 @@ class Favorite:
 
     def delete_saved_prod(self):
         '''Delele the saved products'''
-        # Sql request who delete all the saved product in the table
-        self.request = '''
-        DELETE FROM favorite_product'''
-        # Execute the sql request
-        self.cursor.execute(self.request)
-        # Save the change of the database
-        self.connexion.commit()
+        self.favorite.delete_favorite_product()
         # Return a message that the products are deleted
         print('\nTous vos produits enregistrés ont été supprimés')
