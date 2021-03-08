@@ -1,10 +1,10 @@
 '''Importation of the moduls'''
 import os
 import requests
-from connexion import Connexion
-from category import Category
-from product import Product
-from favorite import Favorite
+from sql_init.connexion import Connexion
+from sql_query.category import Category
+from sql_query.product import Product
+from sql_query.favorite import Favorite
 
 
 class Init:
